@@ -1,0 +1,665 @@
+2023-03-06 08:18:17,500 INFO: 
+                ____                _       _____  ____
+               / __ ) ____ _ _____ (_)_____/ ___/ / __ \
+              / __  |/ __ `// ___// // ___/\__ \ / /_/ /
+             / /_/ // /_/ /(__  )/ // /__ ___/ // _, _/
+            /_____/ \__,_//____//_/ \___//____//_/ |_|
+     ______                   __   __                 __      __
+    / ____/____   ____   ____/ /  / /   __  __ _____ / /__   / /
+   / / __ / __ \ / __ \ / __  /  / /   / / / // ___// //_/  / /
+  / /_/ // /_/ // /_/ // /_/ /  / /___/ /_/ // /__ / /<    /_/
+  \____/ \____/ \____/ \____/  /_____/\____/ \___//_/|_|  (_)
+    
+Version Information: 
+	BasicSR: 1.4.2
+	PyTorch: 1.13.1+cu116
+	TorchVision: 0.15.0.dev20230201+cu116
+2023-03-06 08:18:17,501 INFO: 
+  name: NATIR_LSR_x4
+  model_type: IRModel
+  num_gpu: 1
+  manual_seed: 42
+  bit: 8
+  mixed_fp: True
+  network_g:[
+    type: _NATIR
+    window_size: 13
+    img_range: 1.0
+    depths: [6, 6, 6, 6]
+    embed_dim: 60
+    num_heads: [6, 6, 6, 6]
+    mlp_ratio: 2
+    upsampler: pixelshuffledirect
+    dilations: [1, 1, 1, 1, 1, 1]
+    use_checkpoint: False
+    upscale: 4
+    num_in_ch: 3
+    num_out_ch: 3
+    task: lsr
+  ]
+  path:[
+    pretrain_network_g: ./experiments/NATIR_LSR_x4/models/net_g_490000.pth
+    strict_load_g: True
+    resume_state: ./experiments/NATIR_LSR_x4/training_states/490000.state
+    results_root: /mnt/c/Users/qwopq/Downloads/friedricelab/results/NATIR_LSR_x4
+    log: /mnt/c/Users/qwopq/Downloads/friedricelab/results/NATIR_LSR_x4
+    visualization: /mnt/c/Users/qwopq/Downloads/friedricelab/results/NATIR_LSR_x4/visualization
+  ]
+  train:[
+    gt_size: 128
+    batch_size_per_gpu: 64
+    total_iter: 500000
+    optim_g:[
+      type: Adam
+      lr: 0.0002
+      weight_decay: 0
+      betas: [0.9, 0.99]
+    ]
+    scheduler:[
+      type: MultiStepLR
+      milestones: [250000, 400000, 450000, 475000]
+      gamma: 0.5
+    ]
+    pixel_opt:[
+      type: L1Loss
+      loss_weight: 1.0
+      reduction: mean
+    ]
+  ]
+  val:[
+    val_freq: 5000
+    save_img: False
+    suffix: None
+    metrics:[
+      psnr:[
+        type: calculate_psnr
+        crop_border: 4
+        test_y_channel: True
+      ]
+      ssim:[
+        type: calculate_ssim
+        crop_border: 4
+        test_y_channel: True
+      ]
+    ]
+  ]
+  task_name: LSR_x4
+  scale: 4
+  num_in_ch: 3
+  num_out_ch: 3
+  task: lsr
+  datasets:[
+    train:[
+      name: DF2K_train
+      type: IRDataset
+      dataroot_gt: datasets/sr_data/DF2K/train/HR/x.lmdb
+      dataroot_lq: datasets/sr_data/DF2K/train/LR/x4.lmdb
+      meta_info_file: datasets/meta_info/DF2K_train.txt
+      io_backend:[
+        type: lmdb
+      ]
+      use_hflip: True
+      use_rot: True
+      use_shuffle: True
+      num_worker_per_gpu: 4
+      dataset_enlarge_ratio: 100
+      prefetch_mode: None
+      phase: train
+      scale: 4
+    ]
+    val_0:[
+      name: Demo_Set5
+      type: IRDataset
+      dataroot_gt: datasets/demo_data/Demo_Set5/HR/x4
+      dataroot_lq: datasets/demo_data/Demo_Set5/LR/x4
+      io_backend:[
+        type: disk
+      ]
+      phase: val
+      scale: 4
+    ]
+  ]
+  test_datasets:[
+    test_4:[
+      name: Urban100
+      type: IRDataset
+      dataroot_gt: datasets/sr_data/Urban100/HR/x4.lmdb
+      dataroot_lq: datasets/sr_data/Urban100/LR/x4.lmdb
+      io_backend:[
+        type: lmdb
+      ]
+    ]
+  ]
+  analyse_datasets:[
+    analyse_0:[
+      name: Demo_Set5
+      type: IRDataset
+      dataroot_gt: datasets/demo_data/Demo_Set5/HR/x4
+      dataroot_lq: datasets/demo_data/Demo_Set5/LR/x4
+      io_backend:[
+        type: disk
+      ]
+    ]
+  ]
+  infer_datasets:[
+    infer_1:[
+      name: Set5_GT
+      type: IRDataset
+      dataroot_gt: datasets/demo_data/Demo_Set5/HR/x4
+      io_backend:[
+        type: disk
+      ]
+    ]
+  ]
+  interpret_imgs:[
+    img_1:[
+      img_path: datasets/demo_data/Urban7/7.png
+      w: 110
+      h: 150
+    ]
+  ]
+  logger:[
+    print_freq: 100
+    save_checkpoint_freq: 5000
+    use_tb_logger: False
+    wandb:[
+      project: None
+      resume_id: None
+    ]
+  ]
+  dist_params:[
+    backend: nccl
+    port: 4000
+  ]
+  dist: False
+  rank: 0
+  world_size: 1
+  auto_resume: False
+  is_train: False
+
+2023-03-06 08:18:17,506 INFO: Dataset [IRDataset] - Urban100 is built.
+2023-03-06 08:18:17,507 INFO: Number of test images in Urban100: 100
+2023-03-06 08:18:17,550 INFO: Network [_NATIR] is created.
+2023-03-06 08:18:20,447 INFO: Network: _NATIR, with parameters: 987,228
+2023-03-06 08:18:20,448 INFO: _NATIR(
+  (conv_first): Conv2d(3, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (first_norm): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+  (pos_drop): Dropout(p=0.0, inplace=False)
+  (layers): ModuleList(
+    (0): RNATB(
+      (residual_group): BasicLayer(
+        (blocks): ModuleList(
+          (0): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): Identity()
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.004)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (2): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.009)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (3): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.013)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (4): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.017)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (5): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.022)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+        )
+      )
+      (conv): Conv2d(60, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    )
+    (1): RNATB(
+      (residual_group): BasicLayer(
+        (blocks): ModuleList(
+          (0): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.026)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.030)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (2): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.035)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (3): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.039)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (4): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.043)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (5): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.048)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+        )
+      )
+      (conv): Conv2d(60, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    )
+    (2): RNATB(
+      (residual_group): BasicLayer(
+        (blocks): ModuleList(
+          (0): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.052)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.057)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (2): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.061)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (3): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.065)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (4): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.070)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (5): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.074)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+        )
+      )
+      (conv): Conv2d(60, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    )
+    (3): RNATB(
+      (residual_group): BasicLayer(
+        (blocks): ModuleList(
+          (0): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.078)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (1): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.083)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (2): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.087)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (3): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.091)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (4): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.096)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (5): NATBlock(
+            (norm1): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (attn): NeighborhoodAttention2D(
+              kernel_size=13, dilation=1, head_dim=10, num_heads=6
+              (qkv): Linear(in_features=60, out_features=180, bias=True)
+              (attn_drop): Dropout(p=0.0, inplace=False)
+              (proj): Linear(in_features=60, out_features=60, bias=True)
+              (proj_drop): Dropout(p=0.0, inplace=False)
+            )
+            (drop_path): DropPath(drop_prob=0.100)
+            (norm2): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+            (mlp): Mlp(
+              (fc1): Linear(in_features=60, out_features=120, bias=True)
+              (act): GELU(approximate='none')
+              (fc2): Linear(in_features=120, out_features=60, bias=True)
+              (drop): Dropout(p=0.0, inplace=False)
+            )
+          )
+        )
+      )
+      (conv): Conv2d(60, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    )
+  )
+  (norm): LayerNorm((60,), eps=1e-05, elementwise_affine=True)
+  (conv_after_body): Conv2d(60, 60, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (upsample): UpsampleOneStep(
+    (0): Conv2d(60, 48, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): PixelShuffle(upscale_factor=4)
+  )
+)
+2023-03-06 08:18:20,495 INFO: Loading _NATIR model from ./experiments/NATIR_LSR_x4/models/net_g_490000.pth, with param key: [params].
+2023-03-06 08:18:20,533 INFO: Model [IRModel] is created.
+2023-03-06 08:18:20,533 INFO: Testing Urban100...
+2023-03-06 08:20:51,151 INFO: Validation Urban100
+
+[psnr]   [Current: 26.6826 @ iter NATIR_LSR_x4]   [Best: 26.6826 @ iter NATIR_LSR_x4]
+
+[ssim]   [Current: 0.8035  @ iter NATIR_LSR_x4]   [Best: 0.8035  @ iter NATIR_LSR_x4]
+
