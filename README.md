@@ -48,7 +48,7 @@ python ${function.py} -expe_opt ${expe.yml} -task_opt ${task.yml}
 ```
 
 - `${function.py}` is the function you want to run, e.g. `test.py`
-- `${expe.yml}` is the path to the experimental YML configuration file that contains the model-related and training-related configuration, e.g. `expe/ESWT/ESWT_LSR.yml`
+- `${expe.yml}` is the path to the experimental YML configuration file that contains the model-related and training-related configuration, e.g. `options/repr/NATIR/NATIR_LSR.yml`
 - `${task.yml}` is the path to the task YML configuration file that contains the task-related configuration, e.g. `expe/task/LSR_x4.yml`
 
 > 🤠 A complete experiment consists of three parts: the data, the model, and the training strategy. This design allows their configuration to be decoupled. 
