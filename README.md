@@ -19,7 +19,7 @@ Unlike ESWT, Unlike ESWT, it has a small window size of 13. ESWT uses window siz
 Unlike EDT, it does not use the Flickr2K dataset. Because of this, it is inappropriate for a fair comparison. Additional use of Flickr2K has performance benefits.
 
 Unlike GRL, it uses only local attention. Therefore, additional performance improvement may be possible through global attention.
-## Additional improvements
+## Next steps
 I believe that further performance improvements can be achieved through the following improvements:
 1. Like EWST, a 24 x 6 window size can be used. Unfortunately, this is not supported by natten.
 2. A wider receptive field can be obtained through [Dilated Neighborhood Attention](https://arxiv.org/abs/2209.15001)(sparse global attention). However, this requires a larger HR patch size.
