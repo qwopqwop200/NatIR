@@ -26,6 +26,7 @@ I believe that further performance improvements can be achieved through the foll
 3. Receptive fields of various sizes can be obtained using [Hydra-NA](https://arxiv.org/pdf/2211.05770.pdf). However, this requires a larger HR patch size.
 4. Like GRL, it additionally uses channel attention.
 5. Use a more powerful optimizer (e.g [adan](https://arxiv.org/abs/2208.06677), [lion](https://arxiv.org/abs/2302.06675), etc), a more powerful learning rate scheduler (e.g [warm up](https://arxiv.org/abs/1706.02677), [cosine annealing](https://arxiv.org/abs/1608.03983), etc), and a larger HR patch size.
+6. use the Flickr2K dataset
 ## How to Use
 
 ### 1 Preparation
