@@ -1,9 +1,31 @@
 # NatIR
 NatIR: Image Restoration Using Neighborhood-Attention-Transformer
 
-
 **This code is based on [Fried Rice Lab](https://github.com/fried-rice-lab/friedricelab) and Neighborhood-Attention(https://github.com/SHI-Labs/NATTEN)**
 
+## Comparison with SOTA model
+| Model      |     Dataset    | Params(M) |     Set5     |     Set14    |    BSD100    |   Urban100   |   Manga109   |
+| ---------  | -------------- | --------  | ------------ | ------------ | ------------ | ------------ | ------------ |
+| [SwinIR](https://arxiv.org/abs/2108.10257)     |      DIV2K     |   0.90     | 32.44/0.8976 | 28.77/0.7858 | 27.69/0.7406 | 26.47/0.7980 | 30.92/0.9151 |
+| [ESWT](https://arxiv.org/abs/2301.09869)       |      DIV2K     |   0.58     | 32.46/0.8979 | 28.80/0.7886 | 27.70/0.7410 | 26.56/0.8006 | 30.94/0.9136 |
+| [EDT](https://arxiv.org/abs/2112.10175)        | DIV2K+Flickr2K |   0.92     | 32.53/0.8991 | 28.88/0.7882 | 27.76/0.7433 | 26.71/0.8051 | 31.35/0.9180 |
+| [GRL-T](https://arxiv.org/abs/2303.00748v1)      |        ?       |   0.91     | 32.56/0.9029 | 28.93/0.7961 | 27.77/0.7523 | 27.15/0.8185 | 31.57/0.9219 |
+| **NatIR(ours)**|      DIV2K     |   0.98     | 32.58/0.8995 | 28.90/0.7886 | 27.76/0.7428 | 26.68/0.8035 | 31.25/0.9169 |
+
+Unlike SwinIR, it uses Neighborhood Attention.
+
+Unlike ESWT, Unlike ESWT, it has a small window size of 13. ESWT uses window sizes (24 x 6 and 6 x 24). This gives a receptive field of the same size at a fraction of the cost compared to a 24 x 24 window size. Also, the HR patch size is 288 (I use 128). According to [ESRGAN](https://arxiv.org/abs/1809.00219), this results in additional performance improvements.
+
+Unlike EDT, it does not use the Flickr2K dataset. Because of this, it is inappropriate for a fair comparison. Additional use of Flickr2K has performance benefits.
+
+Unlike GRL, it uses only local attention. Therefore, additional performance improvement may be possible through global attention.
+## Additional improvements
+I believe that further performance improvements can be achieved through the following improvements:
+1. Like EWST, a 24 x 6 window size can be used. Unfortunately, this is not supported by natten.
+2. A wider receptive field can be obtained through [Dilated Neighborhood Attention](https://arxiv.org/abs/2209.15001)(sparse global attention). However, this requires a larger HR patch size.
+3. Receptive fields of various sizes can be obtained using [Hydra-NA](https://arxiv.org/pdf/2211.05770.pdf). However, this requires a larger HR patch size.
+4. Like GRL, it additionally uses channel attention.
+5. Use a more powerful optimizer (e.g [adan](https://arxiv.org/abs/2208.06677), [lion](https://arxiv.org/abs/2302.06675), etc), a more powerful learning rate scheduler (e.g [warm up](https://arxiv.org/abs/1706.02677), [cosine annealing](https://arxiv.org/abs/1608.03983), etc), and a larger HR patch size.
 ## How to Use
 
 ### 1 Preparation
