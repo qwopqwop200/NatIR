@@ -1,6 +1,9 @@
 # NatIR
 NatIR: Image Restoration Using Neighborhood-Attention-Transformer
 
+
+**This code is based on [Fried Rice Lab](https://github.com/fried-rice-lab/friedricelab) and Neighborhood-Attention(https://github.com/SHI-Labs/NATTEN)**
+
 ## How to Use
 
 ### 1 Preparation
@@ -14,6 +17,7 @@ conda create -n frl python
 conda activate frl
 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple # Mainland China only!
 pip install torch torchvision basicsr einops timm matplotlib
+pip install natten -f https://shi-labs.com/natten/wheels/cu116/torch1.13/index.html 
 ```
 
 #### 1.2 Dataset
@@ -197,6 +201,6 @@ We provide many experimental and task YML configuration files. To perform differ
 > 🤠 If these implementations help your work, please consider citing them. Please refer to file `docs/third_party_works.bib` for more information.
 
 # Acknowledgements
-This code is based on [Fried Rice Lab](https://github.com/fried-rice-lab/friedricelab)
+This code is based on [Fried Rice Lab](https://github.com/fried-rice-lab/friedricelab) and Neighborhood-Attention(https://github.com/SHI-Labs/NATTEN)
 
 This code is mainly based on [BasicSR](https://github.com/XPixelGroup/BasicSR). We thank its developers for creating such a useful toolbox. The code of the function analyse is based on [NTIRE2022 ESR](https://github.com/ofsoundof/NTIRE2022_ESR), and the code of the function interpret is based on [LAM](https://github.com/X-Lowlevel-Vision/LAM_Demo). All other image restoration model codes are from their official GitHub. More details can be found in their implementations.
